@@ -153,6 +153,11 @@ function lookup_address(cell, address) {
 }
 
 function renderLaTeX() {
+    // Render LaTeX equations in prose blocks via KaTeX, if available.
+    // Skip rendering if KaTeX is unavailable.
+    if (typeof renderMathInElement == &#39;undefined&#39;) {
+        return;
+    }
     // Render LaTeX equations in prose blocks via KaTeX.
     var proseBlocks = document.querySelectorAll(&quot;.prose-block&quot;);
     Array.from(proseBlocks).map((proseBlock) =&gt;
@@ -204,7 +209,7 @@ function updateNavigation() {
 function extractStructure() { // Also sets ids on h1,h2,...
     var headingsNodes = document.querySelectorAll(&quot;h1, h2, h3, h4, h5, h6&quot;);
     // For now we are just fulling going to regenerate the structure each time
-    // Might be better if we made minimal changes, but ð¤·
+    // Might be better if we made minimal changes, but 🤷
 
     // Extract the structure of the document
     var structure = {children:[]}
@@ -300,7 +305,7 @@ function render(renderMode) {
         };
     }
 }
-render(RENDER_MODE.STATIC);"></script></head><body><div id="main-output"><div class="cell"><div class="prose-block"><h1>Monte Carlo estimates of pi</h1>
+render(RENDER_MODE.STATIC);"></script></head><body><div id="main-output"><div class="cell"><div class="code-block"></div></div><div class="cell"><div class="prose-block"><h1>Monte Carlo Estimates of Pi</h1>
 </div></div><div class="cell"><div class="prose-block"><p>Consider the unit circle centered at the origin.</p>
 </div></div><div class="cell"><div class="prose-block"><p>Consider the first quadrant: the unit circle quadrant and its $1 \times 1$ bounding unit square.</p>
 </div></div><div class="cell"><div class="prose-block"><p>$$\text{Area of unit circle quadrant: } \\ A_{quadrant} = \frac{\pi r^2}{4} = \frac{\pi}{4}$$</p>
@@ -308,23 +313,23 @@ render(RENDER_MODE.STATIC);"></script></head><body><div id="main-output"><div cl
 </div></div><div class="cell"><div class="prose-block"><p>$$\text{Compute } \pi \text{ via ratios: } \\ \frac{A_{quadrant}}{A_{square}} = \frac{\pi}{4}, \; \pi = 4 \thinspace \frac{A_{quadrant}}{A_{square}} $$</p>
 </div></div><div class="cell"><div class="prose-block"><p>To compute $\pi$, randomly sample points in the first quadrant unit square to estimate the $\frac{A_{quadrant}}{A_{square}}$ ratio. Then, multiply by $4$.</p>
 </div></div><div class="cell"><div class="code-block"><span class="keyword">def</span> estimatePiArea (key<span class="symbol">:</span><span class="type-name">Key</span>) <span class="symbol">:</span> <span class="type-name">Float</span> <span class="symbol">=</span>
-  [k1<span class="symbol">,</span> k2] <span class="symbol">=</span> splitKey key
+  [k1<span class="symbol">,</span> k2] <span class="symbol">=</span> split_key key
   x <span class="symbol">=</span> rand k1
   y <span class="symbol">=</span> rand k2
   inBounds <span class="symbol">=</span> (sq x <span class="symbol">+</span> sq y) <span class="symbol">&lt;</span> 1<span class="symbol">.</span>0
-  4<span class="symbol">.</span>0 <span class="symbol">*</span> <span class="type-name">BToF</span> inBounds
+  4<span class="symbol">.</span>0 <span class="symbol">*</span> b_to_f inBounds
 </div></div><div class="cell"><div class="code-block">
 </div></div><div class="cell"><div class="code-block"><span class="keyword">def</span> estimatePiAvgVal (key<span class="symbol">:</span><span class="type-name">Key</span>) <span class="symbol">:</span> <span class="type-name">Float</span> <span class="symbol">=</span>
   x <span class="symbol">=</span> rand key
   4<span class="symbol">.</span>0 <span class="symbol">*</span> sqrt (1<span class="symbol">.</span>0 <span class="symbol">-</span> sq x)
 </div></div><div class="cell"><div class="code-block">
-</div></div><div class="cell"><div class="code-block"><span class="keyword">def</span> meanAndStdDev (n<span class="symbol">:</span><span class="type-name">Int</span>) (f<span class="symbol">:</span> <span class="type-name">Key</span> <span class="symbol">-&gt;</span> <span class="type-name">Float</span>) (key<span class="symbol">:</span><span class="type-name">Key</span>) <span class="symbol">:</span> (<span class="type-name">Float</span> <span class="symbol">&amp;</span> <span class="type-name">Float</span>) <span class="symbol">=</span>
+</div></div><div class="cell"><div class="code-block"><span class="keyword">def</span> meanAndStdDev (n<span class="symbol">:</span><span class="type-name">Nat</span>) (f<span class="symbol">:</span> <span class="type-name">Key</span> <span class="symbol">-&gt;</span> <span class="type-name">Float</span>) (key<span class="symbol">:</span><span class="type-name">Key</span>) <span class="symbol">:</span> (<span class="type-name">Float</span> <span class="symbol">&amp;</span> <span class="type-name">Float</span>) <span class="symbol">=</span>
   samps <span class="symbol">=</span> <span class="keyword">for</span> i<span class="symbol">:</span>(<span class="type-name">Fin</span> n)<span class="symbol">.</span> many f key i
   (mean samps<span class="symbol">,</span> std samps)
 </div></div><div class="cell"><div class="code-block">
 </div></div><div class="cell"><div class="code-block">numSamps <span class="symbol">=</span> 1000000
 </div></div><div class="cell"><div class="code-block">
-</div></div><div class="cell"><div class="code-block"><span class="command">:p</span> meanAndStdDev numSamps estimatePiArea (newKey 0)
-</div><div class="result-block">(3.143452, 1.640889)</div></div><div class="cell"><div class="code-block">
-</div></div><div class="cell"><div class="code-block"><span class="command">:p</span> meanAndStdDev numSamps estimatePiAvgVal (newKey 0)
-</div><div class="result-block">(3.14379, 0.886499)</div></div></div></body></html>
+</div></div><div class="cell"><div class="code-block"><span class="command">:p</span> meanAndStdDev numSamps estimatePiArea (new_key 0)
+</div><div class="result-block">(3.141656, 1.64214)</div></div><div class="cell"><div class="code-block">
+</div></div><div class="cell"><div class="code-block"><span class="command">:p</span> meanAndStdDev numSamps estimatePiAvgVal (new_key 0)
+</div><div class="result-block">(3.145509, 0.886251)</div></div></div></body></html>
